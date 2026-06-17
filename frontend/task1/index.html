@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Healthcare System</title>
+</head>
+<body>
+
+  <h2>Upload Audio</h2>
+
+  <input type="file" id="audioFile" />
+  <button onclick="uploadAudio()">Upload</button>
+
+  <h3>Result:</h3>
+
+  <div>
+    <h4>Transcription:</h4>
+    <p id="text"></p>
+
+    <h4>Symptoms:</h4>
+    <ul id="symptoms"></ul>
+
+    <h4>Duration:</h4>
+    <p id="duration"></p>
+  </div>
+
+  <script>
+    async function uploadAudio() {
+      const fileInput = document.getElementById("audioFile");
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Please select an audio file first!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("audio", file);
+
+      try {
+        const res = await fetch("http://localhost:3000/upload-audio", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) {
+          throw new Error("API request failed");
+        }
+
+        const data = await res.json();
+
+        console.log("Response:", data); // 🔥 debug
+
+        // 🔹 Transcription
+        document.getElementById("text").innerText = data.text || "";
+
+        // 🔹 Symptoms
+        const symptomsList = document.getElementById("symptoms");
+        symptomsList.innerHTML = "";
+
+        if (data.structured && data.structured.symptoms) {
+          data.structured.symptoms.forEach(s => {
+            const li = document.createElement("li");
+            li.innerText = s;
+            symptomsList.appendChild(li);
+          });
+        }
+
+        // 🔹 Duration
+        document.getElementById("duration").innerText =
+          data.structured?.duration || "Not found";
+
+      } catch (error) {
+        console.error(error);
+        alert("Something went wrong!");
+      }
+    }
+  </script>
+
+</body>
+</html>
