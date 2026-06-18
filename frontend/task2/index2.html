@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OCR Image Upload</title>
+</head>
+<body>
+
+  <h2>Upload Image for OCR</h2>
+
+  <input type="file" id="imageFile" accept="image/*" />
+  <button onclick="uploadImage()">Upload Image</button>
+
+  <h3>Extracted Text:</h3>
+  <pre id="output">
+  <div>
+  <h4>OCR Result:</h4>
+  <p id="output"></p>
+  </div>
+
+  <script>
+    async function uploadImage() {
+      const fileInput = document.getElementById("imageFile");
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Please select an image first!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch("http://localhost:3001/upload-image", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) {
+          throw new Error("API request failed");
+        }
+
+        const data = await res.json();
+
+        console.log("OCR Response:", data); // debug
+
+        document.getElementById("output").textContent =
+        "Text: " + data.text + "\n\n" +
+        "Symptoms: " + (data.structured?.symptoms?.join(", ") || "None") + "\n\n" +
+        "Duration: " + (data.structured?.duration || "None");
+
+      } catch (error) {
+        console.error(error);
+        alert("Something went wrong!");
+      }
+    }
+  </script>
+
+</body>
+</html>

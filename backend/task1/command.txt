@@ -1,0 +1,8 @@
+curl -X POST http://localhost:3000/upload-audio \                                                                    
+  -F "audio=@chest.mp3"
+
+npm install cors
+npm install express multer cors -> install dependencies
+pip install openai-whisper -> 
+rm -rf uploads/* -----> for cleanup 
+python3 --version
