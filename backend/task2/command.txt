@@ -1,0 +1,4 @@
+npm init -y
+npm install express cors multer tesseract.js 
+brew install tesseract
+npm install tesseract
