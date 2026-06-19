@@ -6,8 +6,10 @@ import fs from "fs";
 import { exec } from "child_process"; // for ner
 
 
-const app = express();
-app.use(cors());
+// const app = express();
+// router.use(cors());
+
+const router = express.Router();
 
 
 if (!fs.existsSync("uploads")) {
@@ -71,7 +73,7 @@ function extractData(text) {
 
 
 
-app.post("/upload-image", upload.single("image"), async (req, res) => {
+router.post("/upload-image", upload.single("image"), async (req, res) => {
   
   if (!req.file) {
     return res.status(400).send("No file uploaded");
@@ -110,6 +112,8 @@ app.post("/upload-image", upload.single("image"), async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
-  console.log("OCR server running on http://localhost:3001");
-});
+// app.listen(3001, () => {
+//   console.log("OCR server running on http://localhost:3001");
+// });
+
+export default router;

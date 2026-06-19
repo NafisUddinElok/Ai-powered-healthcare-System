@@ -4,8 +4,13 @@ import fs from "fs";
 import { exec } from "child_process";
 import cors from "cors";
 
-const app = express();
-app.use(cors());
+
+const router = express.Router();
+
+// const app = express(); // for we will merge task1 and task2 into one server
+// router.use(cors());
+
+
 const upload = multer({ dest: "uploads/" });
 
 function extractData(text) {
@@ -43,7 +48,7 @@ function extractData(text) {
 }
 
 // custom backed api endpoint for this project and for task1
-app.post("/upload-audio", upload.single("audio"), (req, res) => {
+router.post("/upload-audio", upload.single("audio"), (req, res) => {
   const filePath = req.file.path;
 
   exec(
@@ -80,6 +85,8 @@ app.post("/upload-audio", upload.single("audio"), (req, res) => {
 );
 });
 
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
-});
+// app.listen(3000, () => {
+//   console.log("Server running on http://localhost:3000");
+// });
+
+export default router;

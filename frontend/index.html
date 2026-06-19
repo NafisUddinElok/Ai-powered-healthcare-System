@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Healthcare System</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: white;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 900px;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: flex;
+      gap: 20px;
+    }
+
+    .card {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    input {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .result {
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    .label {
+      color: #94a3b8;
+    }
+
+    .highlight {
+      color: #22c55e;
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 15px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🧠 AI Healthcare System</h1>
+
+    <div class="grid">
+      
+      <!-- AUDIO -->
+      <div class="card">
+        <h2>🎤 Upload Audio</h2>
+        <input type="file" id="audioFile">
+        <br>
+        <button onclick="uploadAudio()">Upload Audio</button>
+      </div>
+
+      <!-- IMAGE -->
+      <div class="card">
+        <h2>🖼 Upload Image</h2>
+        <input type="file" id="imageFile">
+        <br>
+        <button onclick="uploadImage()">Upload Image</button>
+      </div>
+
+    </div>
+
+    <div class="loading" id="loading">
+      ⏳ Processing...
+    </div>
+
+    <!-- RESULT -->
+    <div class="result" id="resultBox" style="display:none;">
+      <h2>📊 Result</h2>
+
+      <p><span class="label">Text:</span> <span id="text"></span></p>
+      <p><span class="label">Symptoms:</span> <span class="highlight" id="symptoms"></span></p>
+      <p><span class="label">Duration:</span> <span id="duration"></span></p>
+      <p><span class="label">Entities:</span> <span id="entities"></span></p>
+    </div>
+
+  </div>
+
+  <script>
+    const BASE_URL = "http://localhost:3000/api";
+
+    function showLoading(show) {
+      document.getElementById("loading").style.display = show ? "block" : "none";
+    }
+
+    function showResult(data) {
+      document.getElementById("resultBox").style.display = "block";
+
+      document.getElementById("text").innerText = data.text || "";
+      document.getElementById("symptoms").innerText =
+        data.structured?.symptoms?.join(", ") || "";
+      document.getElementById("duration").innerText =
+        data.structured?.duration || "";
+
+      document.getElementById("entities").innerText =
+        data.entities
+          ? data.entities.map(e => `${e.text} (${e.label})`).join(", ")
+          : "N/A";
+    }
+
+    async function uploadAudio() {
+      const file = document.getElementById("audioFile").files[0];
+      if (!file) return alert("Select audio");
+
+      showLoading(true);
+
+      const formData = new FormData();
+      formData.append("audio", file);
+
+      const res = await fetch(`${BASE_URL}/upload-audio`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      showLoading(false);
+      showResult(data);
+    }
+
+    async function uploadImage() {
+      const file = document.getElementById("imageFile").files[0];
+      if (!file) return alert("Select image");
+
+      showLoading(true);
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await fetch(`${BASE_URL}/upload-image`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      showLoading(false);
+      showResult(data);
+    }
+  </script>
+
+</body>
+</html>
