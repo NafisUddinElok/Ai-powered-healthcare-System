@@ -45,9 +45,13 @@
         console.log("OCR Response:", data); // debug
 
         document.getElementById("output").textContent =
-        "Text: " + data.text + "\n\n" +
-        "Symptoms: " + (data.structured?.symptoms?.join(", ") || "None") + "\n\n" +
-        "Duration: " + (data.structured?.duration || "None");
+          "Text: " + data.text + "\n\n" +
+          "Symptoms: " + (data.structured?.symptoms?.join(", ") || "None") + "\n\n" +
+          "Duration: " + (data.structured?.duration || "None") + "\n\n" +
+          "Entities: " + (
+            data.entities?.map(e => `${e.text} (${e.label})`).join(", ")
+            || "None"
+          );
 
       } catch (error) {
         console.error(error);

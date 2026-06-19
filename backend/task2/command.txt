@@ -2,3 +2,14 @@ npm init -y
 npm install express cors multer tesseract.js 
 brew install tesseract
 npm install tesseract
+
+for ner : 
+pip install spacy
+python -m spacy download en_core_web_sm
+
+which python3
+which pip
+
+python3 -m pip install spacy click
+python3 -m spacy download en_core_web_sm
+python3 -m spacy info
