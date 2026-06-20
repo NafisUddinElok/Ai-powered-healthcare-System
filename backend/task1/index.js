@@ -52,7 +52,7 @@ router.post("/upload-audio", upload.single("audio"), (req, res) => {
   const filePath = req.file.path;
 
   exec(
-  `whisper ${filePath} --model medium --task translate --output_format txt --output_dir uploads`,
+  `whisper ${filePath} --model base --task translate --output_format txt --output_dir uploads`,
   (err, stdout, stderr) => {
     if (err) {
       console.error("Whisper error:", err);
